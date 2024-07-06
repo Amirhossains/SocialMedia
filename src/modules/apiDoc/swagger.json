@@ -1,0 +1,133 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Social Media Project",
+    "description": "The information about this project is not here :)",
+    "version": "1.0.0"
+  },
+  "components": {
+    "securitySchemes": {
+      "Authorization": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "schemes": "bearer",
+        "description": "User Token From Authorization: Bearer [user_token]"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Tips about user auth"
+    },
+    {
+      "name": "Posts",
+      "description": "Tips about users post"
+    },
+    {
+      "name": "Pages",
+      "description": "Tips about users page"
+    },
+    {
+      "name": "Comments",
+      "description": "Tips about users comment"
+    },
+    {
+      "name": "Home",
+      "description": "Tips about home page"
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "User Registeration API",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "Object",
+                "example": {
+                  "fullname": "AmirHossein Shafiei",
+                  "email": "amhossainsh@gmail.com",
+                  "username": "AmirRt33",
+                  "password": "12345678"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "success"
+          },
+          "400": {
+            "description": "request body is not valid"
+          }
+        }
+      }
+    },
+    "/pages/{pageID}": {
+      "get": {
+        "tags": [
+          "Pages"
+        ],
+        "summary": "User Page",
+        "parameters": [
+          {
+            "name": "pageID",
+            "required": true,
+            "in": "path",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "404": {
+            "description": "user not found !!"
+          }
+        }
+      }
+    },
+    "/pages/{pageID}/follow": {
+      "post": {
+        "tags": [
+          "Pages"
+        ],
+        "summary": "Follow Page",
+        "parameters": [
+          {
+            "name": "pageID",
+            "in": "path",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page followed successfully :))"
+          },
+          "404": {
+            "description": "Page not found !!"
+          },
+          "403": {
+            "description": "You have not access !!"
+          },
+          "401": {
+            "description": "You have not authorized, login first !!"
+          }
+        }
+      }
+    }
+  }
+}
