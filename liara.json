@@ -1,0 +1,13 @@
+{
+    "disks": [
+        {
+            "name": "posts-images",
+            "mountTo": "public/images/posts"
+        },
+        {
+            "name": "profiles-images",
+            "mountTo": "public/images/profiles"
+        }
+    ],
+    "port": 3006
+}

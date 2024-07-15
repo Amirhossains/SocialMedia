@@ -19,13 +19,13 @@ module.exports.edit = async (req, res, next) => {
 
     try {
         await validator.editValidation.validate(req.body, { abortEarly: false })
-        const { email, username, fullname, password } = req.body
+        const { email, username, fullname, password, biography } = req.body
 
         const user = await userModel.findById(req.user._id)
         const isValidPassword = await bcryptjs.compare(password, user.password)
         if (!isValidPassword) {
             req.flash('error', "Password is incorract !!")
-            return res.status(400).redirect('/users/edit')
+            return res.status(400).redirect('/users/edit-profile')
         }
 
         if (req.file) {
@@ -33,7 +33,8 @@ module.exports.edit = async (req, res, next) => {
                 profilePicture: `/images/profiles/${req.file.filename}`,
                 email,
                 fullname,
-                username
+                username,
+                biography
             },
                 { new: true }
             )
@@ -41,14 +42,15 @@ module.exports.edit = async (req, res, next) => {
             await userModel.findByIdAndUpdate(req.user._id, {
                 email,
                 fullname,
-                username
+                username,
+                biography
             },
                 { new: true }
             )
         }
 
         req.flash('success', "Page updated successfully :))")
-        res.status(201).redirect('/users/edit')
+        res.status(201).redirect(`/pages/${req.user._id}`)
     } catch (err) {
         next(err)
     }

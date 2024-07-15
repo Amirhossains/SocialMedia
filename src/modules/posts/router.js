@@ -13,35 +13,35 @@ const uploader = multerStorage(
 
 router
     .route('/')
-    .get(isAuth, isVerified.get, controller.uploadPostPage)
-    .post(isAuth, isVerified.post, uploader.single('media'), controller.uploadPost)
+    .get(isAuth.get, controller.uploadPostPage)
+    .post(isAuth.post, isVerified.post, uploader.single('media'), controller.uploadPost)
 
 router
     .route('/like')
-    .post(isAuth, controller.like)
+    .post(isAuth.post, controller.like)
 
 router
     .route('/dislike')
-    .post(isAuth, controller.dislike)
+    .post(isAuth.post, controller.dislike)
 
 router
     .route('/save')
-    .post(isAuth, controller.save)
+    .post(isAuth.post, controller.save)
 
 router
     .route('/unsave')
-    .post(isAuth, controller.unsave)
+    .post(isAuth.post, controller.unsave)
 
 router
     .route('/saves')
-    .get(isAuth, controller.saves)
+    .get(isAuth.get, controller.saves)
 
 router
     .route('/:postID/remove')
-    .post(isAuth, controller.remove)
+    .post(isAuth.post, controller.remove)
 
 router
     .route('/new-comment')
-    .post(isAuth, controller.addComment)
+    .post(isAuth.post, controller.addComment)
 
 module.exports = router

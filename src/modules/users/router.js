@@ -5,8 +5,8 @@ const { multerStorage } = require('./../../middlewares/uploader')
 const router = express.Router()
 
 router
-    .route('/edit')
-    .get(isAuth, controller.editPage)
-    .post(isAuth, multerStorage('public/images/profiles').single('profilePicture'), controller.edit)
+    .route('/edit-profile')
+    .get(isAuth.get, controller.editPage)
+    .post(isAuth.post, multerStorage('public/images/profiles').single('profilePicture'), controller.edit)
 
 module.exports = router

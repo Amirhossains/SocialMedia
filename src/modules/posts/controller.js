@@ -6,11 +6,12 @@ const postModel = require('./../../models/post')
 const likeModel = require('./../../models/likes')
 const saveModel = require('./../../models/save')
 const commentModel = require('./../../models/comment')
+const getPosts = require('./../../utils/getPosts')
 
 module.exports.uploadPostPage = async (req, res) => {
 
     res.status(200).render('posts/upload', {
-        profilePicture: req.user.profilePicture
+        user: req.user
     })
 }
 
@@ -27,7 +28,7 @@ module.exports.uploadPost = async (req, res, next) => {
             return res.status(400).redirect('/posts')
         }
 
-        let post = new postModel({
+        const post = new postModel({
             media: {
                 path: `images/posts/${req.file.filename}`,
                 filename: req.file.filename
@@ -39,7 +40,7 @@ module.exports.uploadPost = async (req, res, next) => {
         await post.save()
 
         req.flash('success', "Post uploaded successfully :))")
-        return res.status(201).redirect('/posts')
+        return res.status(201).redirect('/')
     } catch (err) {
         next(err)
     }
@@ -161,25 +162,9 @@ module.exports.unsave = async (req, res, next) => {
 module.exports.saves = async (req, res, next) => {
 
     try {
-        const user = req.user
-        const saves = await saveModel.find({ user: user._id }).populate({
-            path: 'post',
-            populate: {
-                path: 'user',
-            }
-        }).lean()
-
-        const likes = await likeModel.find({ user: user._id }).populate('post').lean()
-
-        saves.forEach(item => {
-            likes.forEach(like => {
-                if (item.post._id.toString() === like.post._id.toString()) {
-                    item.hasLike = true
-                }
-            })
-        })
+        const posts = await getPosts.forSaves(req.user._id)
         return res.status(200).render('posts/saves', {
-            posts: saves,
+            posts,
             user: req.user
 
         })

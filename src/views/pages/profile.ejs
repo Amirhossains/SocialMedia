@@ -17,17 +17,22 @@
     <header>
         <nav class="w-full flex-between py-5 container">
             <div>
-                <a href="/index.html" class="logo text-xl"> nokoSocial </a>
+                <a href="/" class="logo text-xl"> nokoSocial </a>
             </div>
-            <div class="relative search-box rounded-xl flex items-center">
-                <span class="absolute search-icon top-2-5 left-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-4 h-4">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                    </svg>
-                </span>
-                <input placeholder="Search in Neko Social .." type="text" class="bg-transparent px-8 w-full h-full" />
+            <form action="/search" method="post">
+                <div class="relative search-box rounded-xl flex items-center">
+                    <span class="absolute search-icon top-2-5 left-3">
+                        <button type="submit">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-4 h-4">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                            </svg>
+                        </button>
+                    </span>
+                    <input placeholder="Search in Neko Social .." type="text" class="bg-transparent px-8 w-full h-full"
+                        name="word" />
+            </form>
             </div>
             <div class="flex gap-6 items-center">
                 <a class="create-button bg-indigo-600" href="/posts">
@@ -35,7 +40,11 @@
                 </a>
                 <div class="w-12 h-12 rounded-full overflow-hidden rounded-full">
                     <button id="profileButton" class="w-full h-full bg-transparent border-none">
-                        <img src="<%= page.profilePicture %>" class="object-cover" alt="profile cover" />
+                        <% if (page.profilePicture) { %>
+                            <img src="<%= page.profilePicture %>" class="object-cover" alt="profile cover" />
+                            <% } else { %>
+                                <img src="/images/profiles/default-user.png" class="object-cover" alt="profile cover" />
+                                <% } %>
                     </button>
                 </div>
             </div>
@@ -54,7 +63,11 @@
 
                     <!-- Profile Image -->
                     <span class="profile-pic-card">
-                        <img src="<%= page.profilePicture %>" class="profile-pic" alt="" />
+                        <% if (page.profilePicture) { %>
+                            <img src="<%= page.profilePicture %>" class="profile-pic" alt="" />
+                            <% } else { %>
+                                <img src="/images/profiles/default-user.png" class="profile-pic" alt="" />
+                                <% } %>
                     </span>
                 </header>
                 <main class="profile-main">
@@ -71,37 +84,50 @@
                             </p>
 
                             <!-- Profile Caption -->
-                            <p class="mt-4" id="profile-caption">
-                                Lorem ipsum dolor sit amet, consectetur
-                                <a href="#" class="url">@rad_front</a> elit. Est sint
-                                molestias eligendi. ⏰
-                            </p>
+                            <% if (hasAccess) { %>
+                                <% if (page.biography) { %>
+                                    <p class="mt-4" id="profile-caption">
+                                        <%= page.biography%>
+                                    </p>
+                                    <% } else { %>
+                                        <p class="mt-4" id="profile-caption">
+                                            Does not have bio!!
+                                        </p>
+                                        <% } %>
+                                            <% } else { %>
+                                                <p class="mt-4" id="profile-caption">
+                                                    You do not have access!!
+                                                </p>
+                                                <% } %>
 
-                            <!-- Profile Link -->
-                            <div class="flex items-center gap-1 mt-3 text">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-4 text-gray-600 h-4">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
-                                </svg>
+                                                    <!-- Profile Link -->
+                                                    <div class="flex items-center gap-1 mt-3 text">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                            class="w-4 text-gray-600 h-4">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
+                                                        </svg>
 
-                                <a href="#" class="url text-sm"> https://sabzlearn.ir </a>
-                            </div>
-                            <!-- Profile Followers/Following count -->
-                            <div class="flex items center gap-4 mt-4">
-                                <div class="flex items center cursor-pointer gap-1">
-                                    <span class="count">
-                                        <%= followers.length %>
-                                    </span>
-                                    <span class="text-gray-700 followers">Followers</span>
-                                </div>
-                                <div id="followings" class="flex items-center cursor-pointer gap-1">
-                                    <span class="count">
-                                        <%= followings.length %>
-                                    </span>
-                                    <span class="text-gray-700 followings">Following</span>
-                                </div>
-                            </div>
+                                                        <a href="#" class="url text-sm"> https://amir-social-media.ir
+                                                        </a>
+                                                    </div>
+                                                    <!-- Profile Followers/Following count -->
+                                                    <div class="flex items center gap-4 mt-4">
+                                                        <div class="flex items center cursor-pointer gap-1">
+                                                            <span class="count">
+                                                                <%= followers.length %>
+                                                            </span>
+                                                            <span class="text-gray-700 followers">Followers</span>
+                                                        </div>
+                                                        <div id="followings"
+                                                            class="flex items-center cursor-pointer gap-1">
+                                                            <span class="count">
+                                                                <%= followings.length %>
+                                                            </span>
+                                                            <span class="text-gray-700 followings">Following</span>
+                                                        </div>
+                                                    </div>
                         </div>
 
                         <!-- Manage -->
@@ -110,9 +136,7 @@
                                 <a href="/users/edit-profile" class="min-w-max flex items-center gap-1 manage-button">
                                     <span> Manage </span>
                                 </a>
-                                <% } %>
-
-
+                                <% } else { %>
                                     <% if (followed) { %>
                                         <form method="post" action="/pages/<%= pageID %>/unfollow">
                                             <button class="unfollow-button font-Poppins-Bold">
@@ -120,12 +144,49 @@
                                             </button>
                                         </form>
                                         <% } else { %>
-                                            <form method="post" action="/pages/<%= pageID %>/follow">
-                                                <button class="unfollow-button font-Poppins-Bold">
-                                                    Follow
-                                                </button>
-                                            </form>
-                                            <%}%>
+                                            <% if (page.private) { %>
+                                                <% if (request) { %>
+                                                    <% if (request.status==='waiting for a reply' ) { %>
+                                                        <form method="post" action="/request/<%= pageID %>/unsend">
+                                                            <button class="unfollow-button font-Poppins-Bold">
+                                                                Unsend request
+                                                            </button>
+                                                        </form>
+                                                        <% } %>
+                                                            <% if (request.status==='rejected' ) { %>
+                                                                <button class="unfollow-button font-Poppins-Bold">
+                                                                    Rejected
+                                                                </button>
+                                                                <% } %>
+                                                                    <% if (request.status==='accepted' ) { %>
+                                                                        <form method="post"
+                                                                            action="/pages/<%= pageID %>/unfollow">
+                                                                            <button
+                                                                                class="unfollow-button font-Poppins-Bold">
+                                                                                Unfollow
+                                                                            </button>
+                                                                        </form>
+                                                                        <% } %>
+                                                                            <% } else { %>
+                                                                                <form method="post"
+                                                                                    action="/request/<%= pageID %>/send">
+                                                                                    <button
+                                                                                        class="unfollow-button font-Poppins-Bold">
+                                                                                        Request
+                                                                                    </button>
+                                                                                </form>
+                                                                                <% } %>
+                                                                                    <% } else { %>
+                                                                                        <form method="post"
+                                                                                            action="/pages/<%= pageID %>/follow">
+                                                                                            <button
+                                                                                                class="unfollow-button font-Poppins-Bold">
+                                                                                                Follow
+                                                                                            </button>
+                                                                                        </form>
+                                                                                        <% } %>
+                                                                                            <% } %>
+                                                                                                <% } %>
                         </div>
                     </div>
 
@@ -158,8 +219,13 @@
                             <article class="profile-feed-card">
                                 <div>
                                     <header>
-                                        <img src="<%= post.user.profilePicture %>" alt="profile picture"
-                                            class="feed-profile-picture" />
+                                        <% if (post.user.profilePicture) { %>
+                                            <img src="<%= post.user.profilePicture %>" alt="profile picture"
+                                                class="feed-profile-picture" />
+                                            <% } else { %>
+                                                <img src="/images/profiles/default-user.png" alt="profile picture"
+                                                    class="feed-profile-picture" />
+                                                <% } %>
                                     </header>
                                 </div>
                                 <div class="w-full">
@@ -283,30 +349,182 @@
                                                                                 </form>
                                                                             </div>
                                                                             <% } %>
-                                            </div>
-                                            <div class="text-sm my-2">
-                                                <span> Liked by </span>
-                                                <span>
-                                                    <strong> rad_front </strong>
-                                                </span>
-                                                <span> and </span>
-                                                <span>
-                                                    <strong> 2,923 others </strong>
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <p class="text-gray-700">
-                                                    <%= post.description %>
-                                                </p>
-                                            </div>
-                                            <div class="mt-1">
-                                                <button class="text-xs max-w-max text-gray-500">
-                                                    View all 294 comments ..
-                                                </button>
-                                            </div>
-                                        </div>
+
+                                                                                <!-- Likes count -->
+                                                                                <% if (post.friendsLikes) { %>
+                                                                                    <% if (post.friendsLikes.length> 0)
+                                                                                        { %>
+                                                                                        <div
+                                                                                            class="mt-1 flex items-center relative">
+                                                                                            <div
+                                                                                                class="liked-by-wrapper relative block">
+                                                                                                <span>
+                                                                                                    <% if
+                                                                                                        (post.friendsLikes[0].profilePicture)
+                                                                                                        { %>
+                                                                                                        <img src="<%= post.friendsLikes[0].profilePicture %>"
+                                                                                                            class="likedBy left-6 z-20"
+                                                                                                            alt="" />
+                                                                                                        <% } else { %>
+                                                                                                            <img src="/images/profiles/default-user.png"
+                                                                                                                class="likedBy left-6 z-20"
+                                                                                                                alt="" />
+                                                                                                            <% } %>
+                                                                                                                <% if
+                                                                                                                    (post.friendsLikes[1])
+                                                                                                                    { %>
+                                                                                                                    <% if
+                                                                                                                        (post.friendsLikes[1].profilePicture)
+                                                                                                                        {
+                                                                                                                        %>
+                                                                                                                        <img src="<%= post.friendsLikes[1].profilePicture %>"
+                                                                                                                            class="likedBy left-3 z-10"
+                                                                                                                            alt="" />
+                                                                                                                        <% } else
+                                                                                                                            {
+                                                                                                                            %>
+                                                                                                                            <img src="/images/profiles/default-user.png"
+                                                                                                                                class="likedBy left-3 z-10"
+                                                                                                                                alt="" />
+                                                                                                                            <% }
+                                                                                                                                %>
+                                                                                                                                <% if
+                                                                                                                                    (post.friendsLikes[2])
+                                                                                                                                    {
+                                                                                                                                    %>
+                                                                                                                                    <% if
+                                                                                                                                        (post.friendsLikes[2].profilePicture)
+                                                                                                                                        {
+                                                                                                                                        %>
+                                                                                                                                        <img src="<%= post.friendsLikes[2].profilePicture %>"
+                                                                                                                                            class="likedBy"
+                                                                                                                                            alt="" />
+                                                                                                                                        <% } else
+                                                                                                                                            {
+                                                                                                                                            %>
+                                                                                                                                            <img src="/images/profiles/default-user.png"
+                                                                                                                                                class="likedBy"
+                                                                                                                                                alt="" />
+                                                                                                                                            <% }
+                                                                                                                                                %>
+                                                                                                                                                <% }
+                                                                                                                                                    %>
+                                                                                                                                                    <% }
+                                                                                                                                                        %>
+                                                                                                </span>
+                                                                                            </div>
+                                                                                            <div class="text-sm">
+                                                                                                <span> Liked by </span>
+                                                                                                <span>
+                                                                                                    <strong>
+                                                                                                        <%= post.friendsLikes[0].username
+                                                                                                            %>
+                                                                                                    </strong>
+                                                                                                </span>
+                                                                                                <span> and </span>
+                                                                                                <span>
+                                                                                                    <strong>
+                                                                                                        <%= post.allLikes
+                                                                                                            - 1 %>
+                                                                                                            others
+                                                                                                    </strong>
+                                                                                                </span>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <% } else { %>
+                                                                                            <div
+                                                                                                class="mt-1 flex items-center relative">
+                                                                                                <div class="text-sm">
+                                                                                                    <% if (post.liked) {
+                                                                                                        %>
+                                                                                                        <span>
+                                                                                                            Likes
+                                                                                                        </span>
+                                                                                                        <span>
+                                                                                                            <strong>
+                                                                                                                <%= post.allLikes
+                                                                                                                    %>
+                                                                                                                    with
+                                                                                                                    you
+                                                                                                            </strong>
+                                                                                                            <% } else {
+                                                                                                                %>
+                                                                                                                <span>
+                                                                                                                    Likes
+                                                                                                                </span>
+                                                                                                                <span>
+                                                                                                                    <strong>
+                                                                                                                        <%= post.allLikes
+                                                                                                                            %>
+                                                                                                                    </strong>
+                                                                                                                    <% }
+                                                                                                                        %>
+                                                                                                                </span>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <% } %>
+                                                                                                <% } else { %>
+                                                                                                    <div
+                                                                                                        class="mt-1 flex items-center relative">
+                                                                                                        <div
+                                                                                                            class="text-sm">
+                                                                                                            <% if
+                                                                                                                (post.liked)
+                                                                                                                { %>
+                                                                                                                <span>
+                                                                                                                    Likes
+                                                                                                                </span>
+                                                                                                                <span>
+                                                                                                                    <strong>
+                                                                                                                        <%= post.allLikes
+                                                                                                                            %>
+                                                                                                                            with
+                                                                                                                            you
+                                                                                                                    </strong>
+                                                                                                                    <% } else
+                                                                                                                        {
+                                                                                                                        %>
+                                                                                                                        <span>
+                                                                                                                            Likes
+                                                                                                                        </span>
+                                                                                                                        <span>
+                                                                                                                            <strong>
+                                                                                                                                <%= post.allLikes
+                                                                                                                                    %>
+                                                                                                                            </strong>
+                                                                                                                        </span>
+                                                                                                                        <% }
+                                                                                                                            %>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <% } %>
+                                                                                                        <!-- User Infos (name, description) -->
+                                                                                                        <div
+                                                                                                            class="mt-1 text-sm gap-1">
+                                                                                                            <span>
+                                                                                                                <strong>
+                                                                                                                    <%= post.user.fullname
+                                                                                                                        %>
+                                                                                                                </strong>
+                                                                                                            </span>
+                                                                                                            <p
+                                                                                                                class="text-gray-700">
+                                                                                                                <%= post.description
+                                                                                                                    %>
+                                                                                                            </p>
+                                                                                                        </div>
+
+                                                                                                        <!-- View all comments -->
+                                                                                                        <div>
+                                                                                                            <button
+                                                                                                                class="text-xs max-w-max text-gray-500">
+                                                                                                                View all
+                                                                                                                294
+                                                                                                                comments
+                                                                                                                ..
+                                                                                                            </button>
+                                                                                                        </div>
                                     </footer>
-                                </div>
                             </article>
                             <% }) %>
                                 <% } else { %>
@@ -439,7 +657,7 @@
                                         d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941" />
                                 </svg>
                             </span>
-                            <span> #sabzlearn 🌞 </span>
+                            <span> #AmirRt 🌞 </span>
                         </a>
                     </article>
                     <article class="p-3">
@@ -542,31 +760,39 @@
             </header>
             <main class="mt-2">
                 <% if (hasAccess) { %>
-                    <% followers.forEach(follower=> { %>
-                        <article class="following-card">
-                            <div class="flex items-center gap-1">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-12 h-12 rounded-full overflow-hidden">
-                                        <img src="/images/profile-1.jpg" class="w-full object-cover h-full" alt="" />
-                                    </div>
-                                    <div>
-                                        <h6 class="">
-                                            <%= follower.fullname %>
-                                        </h6>
-                                        <p class="text-sm font-Poppins-Light text-gray-600">
-                                            @<%= follower.username %>
-                                        </p>
+                    <% if(followers.length> 0) { %>
+
+                        <% followers.forEach(follower=> { %>
+                            <article class="following-card">
+                                <div class="flex items-center gap-1">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-12 h-12 rounded-full overflow-hidden">
+                                            <img src="/images/profile-1.jpg" class="w-full object-cover h-full"
+                                                alt="" />
+                                        </div>
+                                        <div>
+                                            <a href="/pages/<%= follower._id %>">
+                                                <h6 class="">
+                                                    <%= follower.fullname %>
+                                                </h6>
+                                                <p class="text-sm font-Poppins-Light text-gray-600">
+                                                    @<%= follower.username %>
+                                                </p>
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div>
-                                <button class="follow-button text-xs">Follow</button>
-                            </div>
-                        </article>
-                        <% }) %>
-                            <% } else { %>
-                                <h1 style="text-align: center">You can't access to followers</h1>
-                                <% } %>
+                                <div>
+                                    <button class="follow-button text-xs">Follow</button>
+                                </div>
+                            </article>
+                            <% }) %>
+                                <% } else { %>
+                                    <h1 style="text-align: center">No Followers !!</h1>
+                                    <% } %>
+                                        <% } else { %>
+                                            <h1 style="text-align: center">You can't access to followers</h1>
+                                            <% } %>
             </main>
         </section>
     </section>
@@ -599,12 +825,14 @@
                                                 alt="" />
                                         </div>
                                         <div>
-                                            <h6 class="">
-                                                <%= following.fullname %>
-                                            </h6>
-                                            <p class="text-sm font-Poppins-Light text-gray-600">
-                                                @<%= following.username %>
-                                            </p>
+                                            <a href="/pages/<%= following._id %>">
+                                                <h6 class="">
+                                                    <%= following.fullname %>
+                                                </h6>
+                                                <p class="text-sm font-Poppins-Light text-gray-600">
+                                                    @<%= following.username %>
+                                                </p>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -616,7 +844,6 @@
                             <% }) %>
                                 <% } else { %>
                                     <h1 style="text-align: center">No followings !!</h1>
-
                                     <% } %>
                                         <% } else { %>
                                             <h1 style="text-align: center">You can't access to followings</h1>
@@ -700,7 +927,6 @@
     </section>
 
     <!-- Scripts -->
-    <script src="/js/profile.js"></script>
     <script src="/js/sweetalert.js"></script>
     <script>
         if ("<%= locals.messages.error %>") {

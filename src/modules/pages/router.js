@@ -6,14 +6,14 @@ const router = express.Router()
 
 router
     .route('/:profileID')
-    .get(isAuth, controller.userPage)
+    .get(isAuth.get, controller.userPage)
 
 router
     .route('/:profileID/follow')
-    .post(isAuth, controller.follow)
+    .post(isAuth.post, controller.follow)
 
 router
     .route('/:profileID/unfollow')
-    .post(isAuth, controller.unfollow)
+    .post(isAuth.post, controller.unfollow)
 
 module.exports = router

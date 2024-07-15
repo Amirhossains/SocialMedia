@@ -11,6 +11,8 @@ const uploadPostsRouter = require('./modules/posts/router')
 const pageRouters = require('./modules/pages/router')
 const userRouters = require('./modules/users/router')
 const homeRouters = require('./modules/home/router')
+const requestRouters = require('./modules/requests/router')
+
 const swaggerRouter = require('./modules/apiDoc/swagger.routes')
 const { setHeaders } = require('./middlewares/setHeaders')
 const { errorHandler } = require('./middlewares/errorHandler')
@@ -40,7 +42,7 @@ app.use(session({
 app.use(flash())
 
 //* Cookie Parser
-app.use(cookie(process.env.JWT_SECRET_KEY))
+app.use(cookie('de25df8c62ve2cveuif2fe2'))
 
 //* Cors policy
 app.use(setHeaders)
@@ -53,6 +55,7 @@ app.use('/', homeRouters)
 app.use('/auth', authRouter)
 app.use('/posts', uploadPostsRouter)
 app.use('/pages', pageRouters)
+app.use('/request', requestRouters)
 app.use('/users', userRouters)
 app.use('/api-doc', swaggerRouter)
 
@@ -61,7 +64,7 @@ app.use((req, res) => {
     res.status(200).json({ message: `path ${req.path} not found` })
 })
 
-// TODO: Needs features
+// TODO: Needs more features
 app.use(errorHandler)
 
 module.exports = app

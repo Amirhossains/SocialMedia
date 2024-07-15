@@ -14,7 +14,11 @@ router
     .post(controller.login)
 
 router
-    .route('/refresh-token/:path/?:path2')
+    .route('/logout')
+    .get(controller.logout)
+
+router
+    .route('/refresh-token/:path/:path2?')
     .get(controller.refreshToken)
 
 router

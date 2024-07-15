@@ -19,7 +19,10 @@ module.exports.registerationValidation = yup.object({
         .string()
         .required("Fullname is required")
         .min(5, "fullname must be 5 chars ar least")
-        .max(34, "fullname must be 34 chars ar top")
+        .max(34, "fullname must be 34 chars ar top"),
+    private: yup
+        .string()
+        .optional()
 })
 
 module.exports.loginValidation = yup.object({

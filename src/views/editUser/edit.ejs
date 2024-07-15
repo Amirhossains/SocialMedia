@@ -12,7 +12,7 @@
 <body id="profile-edit-wrapper">
 
     <div class="back-to-home">
-        <a href="/index.html">Back to home </a>
+        <a href="/">Back to home </a>
     </div>
 
     <section id="profile-edit-form">
@@ -34,7 +34,11 @@
             <!-- Profile Picture -->
             <section id="edit-profile-picture-card">
                 <div id="edit-profile-picture" class="w-18 h-18 rounded-full overflow-hidden">
-                    <img src="<%=user.profilePicture%>" alt="Profile" class="object-cover">
+                    <% if (user.proflePicture) { %>
+                        <img src="<%= user.profilePicture %>" alt="Profile" class="object-cover">
+                        <% } else { %>
+                            <img src="/images/profiles/default-user.png" alt="Profile" class="object-cover">
+                            <% } %>
                 </div>
 
                 <span id="edit-button">
@@ -47,7 +51,7 @@
             </section>
 
             <!-- Edit Profile Content/inputs -->
-            <form action="/users/edit" method="post" enctype="multipart/form-data">
+            <form action="/users/edit-profile" method="post" enctype="multipart/form-data">
                 <section id="edit-profile-content">
                     <section id="edit-profile-container">
                         <!-- Name Input -->
@@ -80,6 +84,17 @@
                             <div class="profile-edit-input-card">
                                 <input class="profile-edit-input" id="profile-email" type="text" name="email"
                                     value="<%= user.email %>">
+                            </div>
+                        </article>
+
+                        <!-- Biography Input -->
+                        <article class="edit-profile_input-card">
+                            <label for="profile-password" class="text-xs">
+                                Biography
+                            </label>
+                            <div class="profile-edit-input-card">
+                                <input class="profile-edit-input" id="profile-password" type="text" name="biography"
+                                    value="<%=user.biography%>" placeholder="Your Bio">
                             </div>
                         </article>
 

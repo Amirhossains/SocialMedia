@@ -14,17 +14,27 @@
     <header>
         <nav class="w-full flex-between py-5 container">
             <div>
-                <a href="/index.html" class="logo text-xl"> nokoSocial </a>
+                <p class="logo text-xl"> nokoSocial </p>
             </div>
-            <div class="relative search-box rounded-xl flex items-center">
-                <span class="absolute search-icon top-2-5 left-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-4 h-4">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                    </svg>
-                </span>
-                <input placeholder="Search in Neko Social .." type="text" class="bg-transparent px-8 w-full h-full" />
+            <div>
+                <a class="create-button bg-indigo-600" href="/auth/logout">
+                    Log out
+                </a>
+            </div>
+            <form action="/search" method="post">
+                <div class="relative search-box rounded-xl flex items-center">
+                    <span class="absolute search-icon top-2-5 left-3">
+                        <button type="submit">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-4 h-4">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                            </svg>
+                        </button>
+                    </span>
+                    <input placeholder="Search in Neko Social .." type="text" class="bg-transparent px-8 w-full h-full"
+                        name="word" />
+            </form>
             </div>
             <div class="flex gap-6 items-center">
                 <a class="create-button bg-indigo-600" href="/posts">
@@ -32,7 +42,12 @@
                 </a>
                 <div class="w-12 h-12 rounded-full overflow-hidden rounded-full">
                     <button id="profileButton" class="w-full h-full bg-transparent border-none">
-                        <img src="<%= user.profilePicture %>" class="object-cover" alt="profile cover" />
+                        <% if (user.profilePicture) { %>
+                            <img src="<%= user.profilePicture %>" class="object-cover" alt="profile cover" />
+                            <% } else { %>
+                                <img src="/images/profiles/default-user.png" class=" object-cover"
+                                    alt="profile cover" />
+                                <% } %>
                     </button>
                 </div>
             </div>
@@ -45,22 +60,31 @@
         <aside id="sidebar">
             <!-- Profile Card -->
             <article class="profile-card shadow px-4">
-                <div>
-                    <img src="<%= user.profilePicture %>" class="w-12 h-12 rounded-full" alt="Peyman Ahmadi" />
-                </div>
-                <div>
-                    <p class="user-profile-name text-gray-900 font-Poppins-Bold text-sm">
-                        <%= user.fullname %>
-                    </p>
-                    <p class="font-Poppins-Light text-xs text-gray-500">@<%= user.username %>
-                    </p>
-                </div>
+                <% if (user.profilePicture) { %>
+                    <div>
+                        <img src="<%= user.profilePicture %>" class="w-12 h-12 rounded-full" alt="Peyman Ahmadi" />
+                    </div>
+                    <% } else { %>
+                        <div>
+                            <img src="/images/profiles/default-user.png" class="w-12 h-12 rounded-full"
+                                alt="Peyman Ahmadi" />
+                        </div>
+                        <% } %>
+                            <div>
+                                <a href="/pages/<%= user._id %>">
+                                    <p class="user-profile-name text-gray-900 font-Poppins-Bold text-sm">
+                                        <%= user.fullname %>
+                                    </p>
+                                    <p class="font-Poppins-Light text-xs text-gray-500">@<%= user.username %>
+                                    </p>
+                                </a>
+                            </div>
             </article>
 
             <!-- Website Main Links -->
             <section class="my-4 shadow overflow-hidden" id="sidebar-links">
                 <div>
-                    <a class="nav-link active-tab" href="/index.html">
+                    <a class="nav-link active-tab" href="/">
                         <div class="flex-center">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="w-5 h-5">
@@ -256,7 +280,11 @@
                 <div id="tweet-card" class="shadow flex ic">
                     <div class="h-full flex-center absolute left-2">
                         <span class="w-8 h-8 rounded-full overflow-hidden">
-                            <img src="<%= user.profilePicture %>" class="object-cover" alt="" />
+                            <% if (user.profilePicture) { %>
+                                <img src="<%= user.profilePicture %>" class="object-cover" alt="" />
+                                <% } else { %>
+                                    <img src="/images/profiles/default-user.png" class="object-cover" alt="" />
+                                    <% } %>
                         </span>
                     </div>
                     <input type="text" class="tweet-input"
@@ -268,307 +296,271 @@
             <!-- Feeds / Posts -->
             <section id="feeds">
                 <!-- Feed Card -->
-                <article class="feed-card shadow">
-                    <!-- Feed header -->
-                    <header>
-                        <a href="/src/Pages/Profiles/Hosna/index.html" class="flex items-center gap-3">
-                            <div>
-                                <img src="/images/profile-1.jpg" alt="Profile card" class="w-8 rounded-full" />
-                            </div>
-                            <div>
-                                <p class="font-Poppins-Medium text-sm twitter-name">
-                                    Lena Mc'Queen
-                                </p>
-                                <p class="tweet-time">
-                                    <span>Dubai</span>
-                                    ,
-                                    <span>6 Minutes Ago</span>
-                                </p>
-                            </div>
-                        </a>
-                    </header>
-
-                    <!-- Feed body -->
-                    <main class="tweet-body">
-                        <img clas src="/images/feed-1.jpg" class="tweet-image object-cover" alt="" />
-                    </main>
-
-                    <!-- Feed footer -->
-                    <footer class="px-4">
-                        <!-- Like & Comment Share / Views & Save Button -->
-                        <section class="flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <button title="like" class="max-w-max">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-                                    </svg>
-                                </button>
-                                <button title="comment" class="max-w-max">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
-                                    </svg>
-                                </button>
-                                <button title="comment" class="max-w-max">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
-                                    </svg>
-                                </button>
-                            </div>
-
-                            <!-- Views, Save -->
-                            <div class="flex items-center gap-2 justify-between">
-                                <!-- Views -->
-                                <div class="flex items-center gap-1 text-xs text-gray-700">
-                                    <span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                                        </svg>
-                                    </span>
-                                    <span class="text-xs"> 29,428 </span>
-                                </div>
-
-                                <!-- save button -->
-                                <div class="max-h-max">
-                                    <button class="save-button">
-                                        <span>
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                fill="currentColor" class="w-4 h-4">
-                                                <path fill-rule="evenodd"
-                                                    d="M6.32 2.577a49.255 49.255 0 0 1 11.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 0 1-1.085.67L12 18.089l-7.165 3.583A.75.75 0 0 1 3.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93Z"
-                                                    clip-rule="evenodd" />
-                                            </svg>
-                                        </span>
-                                        <span> save </span>
-                                    </button>
-                                </div>
-                            </div>
-                        </section>
-
-                        <!-- Likes count -->
-                        <div class="mt-1 flex items-center relative">
-                            <div class="liked-by-wrapper relative block">
-                                <span>
-                                    <img src="/images/profile-5.jpg" class="likedBy" alt="" />
-                                </span>
-                                <span>
-                                    <img src="/images/profile-6.jpg" class="likedBy left-3 z-10" alt="" />
-                                </span>
-                                <span> </span>
-                                <img src="/images/profile-7.jpg" class="likedBy left-6 z-20" alt="" />
-                            </div>
-
-                            <div class="text-sm">
-                                <span> Liked by </span>
-                                <span>
-                                    <strong> rad_front </strong>
-                                </span>
-                                <span> and </span>
-                                <span>
-                                    <strong> 2,923 others </strong>
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- User Infos (name, description) -->
-                        <div class="mt-1 text-sm gap-1">
-                            <span>
-                                <strong> Lena Mc'Queen </strong>
-                            </span>
-                            <p class="text-gray-700">
-                                Lorem ipsum dolor sit amet consectetur.
-                            </p>
-                        </div>
-
-                        <!-- View all comments -->
-                        <div>
-                            <button class="text-xs max-w-max text-gray-500">
-                                View all 294 comments ..
-                            </button>
-                        </div>
-                    </footer>
-                </article>
-
-                <!-- Feed Card -->
-                <article class="feed-card shadow">
-                    <header>
-                        <a href="/src/Pages/Profiles/Hosna/index.html" class="flex items-center gap-3">
-                            <div>
-                                <img src="/images/profile-2.jpg" alt="Profile card" class="w-8 rounded-full" />
-                            </div>
-                            <div>
-                                <p class="font-Poppins-Medium text-sm twitter-name">
-                                    Davood amiri
-                                </p>
-                                <p class="tweet-time">
-                                    <span>Dubai</span>
-                                    ,
-                                    <span>6 Minutes Ago</span>
-                                </p>
-                            </div>
-                        </a>
-                    </header>
-                    <main class="tweet-body">
-                        <img clas src="/images/feed-2.jpg" class="tweet-image object-cover" alt="" />
-                    </main>
-                    <footer class="px-4">
-                        <div class="flex items-center gap-2">
-                            <button title="like" class="max-w-max">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-                                </svg>
-                            </button>
-                            <button title="comment" class="max-w-max">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
-                                </svg>
-                            </button>
-                            <button title="comment" class="max-w-max">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
-                                </svg>
-                            </button>
-                        </div>
-
-                        <div class="mt-1 flex items-center relative">
-                            <div class="liked-by-wrapper relative block">
-                                <span>
-                                    <img src="/images/profile-5.jpg" class="likedBy" alt="" />
-                                </span>
-                                <span>
-                                    <img src="/images/profile-6.jpg" class="likedBy left-3 z-10" alt="" />
-                                </span>
-                                <span>
-                                    <img src="/images/profile-7.jpg" class="likedBy left-6 z-20" alt="" />
-                                </span>
-                            </div>
-                            <div class="text-sm">
-                                <span> Liked by </span>
-                                <span>
-                                    <strong> rad_front </strong>
-                                </span>
-                                <span> and </span>
-                                <span>
-                                    <strong> 2,923 others </strong>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="mt-1 text-sm gap-1">
-                            <span>
-                                <strong> Lena Mc'Queen </strong>
-                            </span>
-                            <p class="text-gray-700">
-                                Lorem ipsum dolor sit amet consectetur.
-                            </p>
+                <% if (posts.length < 1) {%>
+                    <div class="its-empty">
+                        <div class="font-Poppins-Bold text-lg text-gray-900">
+                            Aww, Nothing to show :(
                         </div>
                         <div>
-                            <button class="text-xs max-w-max text-gray-500">
-                                View all 294 comments ..
-                            </button>
+                            <img src="/images/notfound.png" class="not-found-image" alt="" />
                         </div>
-                    </footer>
-                </article>
+                    </div>
+                    <% } else { %>
+                        <% posts.forEach(post=> { %>
+                            <article class="feed-card shadow">
+                                <!-- Feed header -->
+                                <header>
+                                    <a href="/pages/<%= post.user._id %>" class="flex items-center gap-3">
+                                        <div>
+                                            <% if (post.user.profilePicture) { %>
+                                                <img src="<%= post.user.profilePicture %>" alt="Profile card"
+                                                    class="w-8 rounded-full" />
+                                                <% } else {%>
+                                                    <img src="/images/profiles/default-user.png" alt="Profile card"
+                                                        class="w-8 rounded-full" />
+                                                    <% } %>
+                                        </div>
+                                        <div>
+                                            <p class="font-Poppins-Medium text-sm twitter-name">
+                                                <%= post.user.fullname %>
+                                            </p>
+                                            <p class="tweet-time">
+                                                <span>Dubai</span>
+                                                ,
+                                                <span>6 Minutes Ago</span>
+                                            </p>
+                                        </div>
+                                    </a>
+                                </header>
 
-                <!-- Feed Card -->
-                <article class="feed-card shadow">
-                    <header>
-                        <a href="/src/Pages/Profiles/Hosna/index.html" class="flex items-center gap-3">
-                            <div>
-                                <img src="/images/profile-3.jpg" alt="Profile card" class="w-8 rounded-full" />
-                            </div>
-                            <div>
-                                <p class="font-Poppins-Medium text-sm twitter-name">
-                                    Hosna Kazemi
-                                </p>
-                                <p class="tweet-time">
-                                    <span>Dubai</span>
-                                    ,
-                                    <span>6 Minutes Ago</span>
-                                </p>
-                            </div>
-                        </a>
-                    </header>
-                    <main class="tweet-body">
-                        <img clas src="/images/feed-3.jpg" class="tweet-image object-cover" alt="" />
-                    </main>
-                    <footer class="px-4">
-                        <div class="flex items-center gap-2">
-                            <button title="like" class="max-w-max">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-                                </svg>
-                            </button>
-                            <button title="comment" class="max-w-max">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
-                                </svg>
-                            </button>
-                            <button title="comment" class="max-w-max">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
-                                </svg>
-                            </button>
-                        </div>
+                                <!-- Feed body -->
+                                <main class="tweet-body">
+                                    <img clas src="/<%= post.media.path %>" class="tweet-image object-cover" alt="" />
+                                </main>
 
-                        <div class="mt-1 flex items-center relative">
-                            <div class="liked-by-wrapper relative block">
-                                <span>
-                                    <img src="/images/profile-5.jpg" class="likedBy" alt="" />
-                                </span>
-                                <span>
-                                    <img src="/images/profile-6.jpg" class="likedBy left-3 z-10" alt="" />
-                                </span>
-                                <span>
-                                    <img src="/images/profile-7.jpg" class="likedBy left-6 z-20" alt="" />
-                                </span>
-                            </div>
-                            <div class="text-sm">
-                                <span> Liked by </span>
-                                <span>
-                                    <strong> rad_front </strong>
-                                </span>
-                                <span> and </span>
-                                <span>
-                                    <strong> 2,923 others </strong>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="mt-1 text-sm gap-1">
-                            <span>
-                                <strong> Lena Mc'Queen </strong>
-                            </span>
-                            <p class="text-gray-700">
-                                Lorem ipsum dolor sit amet consectetur.
-                            </p>
-                        </div>
-                        <div>
-                            <button class="text-xs max-w-max text-gray-500">
-                                View all 294 comments ..
-                            </button>
-                        </div>
-                    </footer>
-                </article>
+                                <!-- Feed footer -->
+                                <footer class="px-4">
+                                    <!-- Like & Comment Share / Views & Save Button -->
+                                    <section class="flex items-center justify-between">
+                                        <div class="flex items-center gap-2">
+                                            <% if (post.isLiked) { %>
+                                                <form action="/posts/dislike" method="post">
+                                                    <input type="hidden" name="postID" value="<%= post._id %>">
+                                                    <button title="dislike" class="max-w-max" type="submit">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="red"
+                                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                            class="w-6 h-6">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                                                        </svg>
+                                                    </button>
+                                                </form>
+                                                <% } else { %>
+                                                    <form action="/posts/like" method="post">
+                                                        <input type="hidden" name="postID" value="<%= post._id %>">
+                                                        <button title="like" class="max-w-max" type="submit">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                                viewBox="0 0 24 24" stroke-width="1.5"
+                                                                stroke="currentColor" class="w-6 h-6">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                                                            </svg>
+                                                        </button>
+                                                    </form>
+                                                    <% } %>
+                                                        <button onclick="commentIconClickHandler('<%= post._id %>')"
+                                                            class="comment-icon max-w-max">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                                viewBox="0 0 24 24" stroke-width="1.5"
+                                                                stroke="currentColor" class="w-6 h-6">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
+                                                            </svg>
+                                                        </button>
+                                                        <button class="max-w-max">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                                viewBox="0 0 24 24" stroke-width="1.5"
+                                                                stroke="currentColor" class="w-6 h-6">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
+                                                            </svg>
+                                                        </button>
+                                                        <!-- save button -->
+                                                        <div class="max-h-max">
+                                                            <% if (post.isSaved) { %>
+                                                                <form action="/posts/unsave" method="post">
+                                                                    <input type="hidden" name="postID"
+                                                                        value="<%= post._id %>">
+                                                                    <button class="max-w-max">
+                                                                        <svg fill="black" viewBox="0 0 24 24"
+                                                                            stroke-width="1.5" stroke="currentColor"
+                                                                            class="w-6 h-6"
+                                                                            xmlns="http://www.w3.org/2000/svg">
+                                                                            <path
+                                                                                d="M5 7.8C5 6.11984 5 5.27976 5.32698 4.63803C5.6146 4.07354 6.07354 3.6146 6.63803 3.32698C7.27976 3 8.11984 3 9.8 3H14.2C15.8802 3 16.7202 3 17.362 3.32698C17.9265 3.6146 18.3854 4.07354 18.673 4.63803C19 5.27976 19 6.11984 19 7.8V21L12 17L5 21V7.8Z"
+                                                                                stroke="currentColor" stroke-width="2"
+                                                                                stroke-linecap="round"
+                                                                                stroke-linejoin="round" />
+                                                                        </svg>
+                                                                    </button>
+                                                                </form>
+                                                                <% } else { %>
+                                                                    <form action="/posts/save" method="post">
+                                                                        <input type="hidden" name="postID"
+                                                                            value="<%= post._id %>">
+                                                                        <button class="max-w-max">
+                                                                            <svg fill="none" viewBox="0 0 24 24"
+                                                                                stroke-width="1.5" stroke="currentColor"
+                                                                                class="w-6 h-6"
+                                                                                xmlns="http://www.w3.org/2000/svg">
+                                                                                <path
+                                                                                    d="M5 7.8C5 6.11984 5 5.27976 5.32698 4.63803C5.6146 4.07354 6.07354 3.6146 6.63803 3.32698C7.27976 3 8.11984 3 9.8 3H14.2C15.8802 3 16.7202 3 17.362 3.32698C17.9265 3.6146 18.3854 4.07354 18.673 4.63803C19 5.27976 19 6.11984 19 7.8V21L12 17L5 21V7.8Z"
+                                                                                    stroke="currentColor"
+                                                                                    stroke-width="2"
+                                                                                    stroke-linecap="round"
+                                                                                    stroke-linejoin="round" />
+                                                                            </svg>
+                                                                        </button>
+                                                                    </form>
+                                                                    <% } %>
+                                                        </div>
+
+                                                        <!-- Views, Save -->
+                                                        <div class="flex items-center gap-2 justify-between">
+                                                            <!-- Views -->
+                                                            <div class="flex items-center gap-1 text-xs text-gray-700">
+                                                                <span>
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                                        viewBox="0 0 24 24" stroke-width="1.5"
+                                                                        stroke="currentColor" class="w-4 h-4">
+                                                                        <path stroke-linecap="round"
+                                                                            stroke-linejoin="round"
+                                                                            d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                                                        <path stroke-linecap="round"
+                                                                            stroke-linejoin="round"
+                                                                            d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                                                    </svg>
+                                                                </span>
+                                                                <span class="text-xs"> 29,428 </span>
+                                                            </div>
+
+                                                        </div>
+                                        </div>
+                                    </section>
+
+                                    <!-- Likes count -->
+                                    <% if (post.friendsLikes) { %>
+                                        <% if (post.friendsLikes[0]) { %>
+                                            <div class="mt-1 flex items-center relative">
+                                                <div class="liked-by-wrapper relative block">
+                                                    <span>
+                                                        <% if (post.friendsLikes[0].profilePicture) { %>
+                                                            <img src="<%= post.friendsLikes[0].profilePicture %>"
+                                                                class="likedBy left-6 z-20" alt="" />
+                                                            <% } else { %>
+                                                                <img src="/images/profiles/default-user.png"
+                                                                    class="likedBy left-6 z-20" alt="" />
+                                                                <% } %>
+                                                                    <% if (post.friendsLikes[1]) { %>
+                                                                        <% if (post.friendsLikes[1].profilePicture) { %>
+                                                                            <img src="<%= post.friendsLikes[1].profilePicture %>"
+                                                                                class="likedBy left-3 z-10" alt="" />
+                                                                            <% } else { %>
+                                                                                <img src="/images/profiles/default-user.png"
+                                                                                    class="likedBy left-3 z-10"
+                                                                                    alt="" />
+                                                                                <% } %>
+                                                                                    <% if (post.friendsLikes[2]) { %>
+                                                                                        <% if
+                                                                                            (post.friendsLikes[2].profilePicture)
+                                                                                            { %>
+                                                                                            <img src="<%= post.friendsLikes[2].profilePicture %>"
+                                                                                                class="likedBy"
+                                                                                                alt="" />
+                                                                                            <% } else { %>
+                                                                                                <img src="/images/profiles/default-user.png"
+                                                                                                    class="likedBy"
+                                                                                                    alt="" />
+                                                                                                <% } %>
+                                                                                                    <% } %>
+                                                                                                        <% } %>
+                                                    </span>
+                                                </div>
+                                                <div class="text-sm">
+                                                    <span> Liked by </span>
+                                                    <span>
+                                                        <strong>
+                                                            <%= post.friendsLikes[0].username %>
+                                                        </strong>
+                                                    </span>
+                                                    <span> and </span>
+                                                    <span>
+                                                        <strong>
+                                                            <%= post.allLikes -1 %> others
+                                                        </strong>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <% } else { %>
+                                                <div class="mt-1 flex items-center relative">
+                                                    <div class="text-sm">
+                                                        <span> Likes </span>
+                                                        <% if (post.isLiked) { %>
+                                                            <span>
+                                                                <strong>
+                                                                    <%= post.allLikes %> with you
+                                                                </strong>
+                                                                <% } else { %>
+                                                                    <span>
+                                                                        <strong>
+                                                                            <%= post.allLikes %>
+                                                                        </strong>
+                                                                        <% } %>
+                                                                    </span>
+                                                    </div>
+                                                </div>
+                                                <% } %>
+                                                    <% } else { %>
+                                                        <div class="mt-1 flex items-center relative">
+                                                            <div class="text-sm">
+                                                                <span> Likes </span>
+                                                                <% if (post.isLiked) { %>
+                                                                    <span>
+                                                                        <strong>
+                                                                            <%= post.allLikes %> with you
+                                                                        </strong>
+                                                                        <% } else { %>
+                                                                            <span>
+                                                                                <strong>
+                                                                                    <%= post.allLikes %>
+                                                                                </strong>
+                                                                                <% } %>
+                                                                            </span>
+                                                            </div>
+                                                        </div>
+                                                        <% } %>
+                                                            <!-- User Infos (name, description) -->
+                                                            <div class="mt-1 text-sm gap-1">
+                                                                <span>
+                                                                    <strong>
+                                                                        <%= post.user.username %>
+                                                                    </strong>
+                                                                </span>
+                                                                <p class="text-gray-700">
+                                                                    <%= post.description %>
+                                                                </p>
+                                                            </div>
+
+                                                            <!-- View all comments -->
+                                                            <div>
+                                                                <button class="text-xs max-w-max text-gray-500">
+                                                                    View all 294 comments ..
+                                                                </button>
+                                                            </div>
+                                </footer>
+                            </article>
+                            <% }) %>
+                                <% } %>
             </section>
         </section>
 
@@ -581,13 +573,13 @@
                         <p>
                             <strong> Messages </strong>
                         </p>
-                        <button class="max-w-max">
+                        <a class="max-w-max" href="/users/edit-profile">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="w-6 h-6">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                             </svg>
-                        </button>
+                        </a>
                     </div>
                     <div class="mt-4">
                         <div id="direct-search">
@@ -832,53 +824,51 @@
             <section id="requests">
                 <h4>Requests</h4>
                 <section>
-                    <article class="request-card">
-                        <div class="flex mb-3 items-center gap-3">
-                            <div class="w-10 h-10 rounded-full overflow-hidden">
-                                <img src="/images/profile-1.jpg" class="object-cover w-full h-full" alt="" />
-                            </div>
-                            <div>
-                                <p class="text-sm font-Poppins-SemiBold">Jeniffer Lowernce</p>
-                                <p class="text-xs text-gray-500">2 Mutual friends</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <button class="accept-button max-w-max">Accept</button>
-                            <button class="decline-button max-w-max">Decline</button>
-                        </div>
-                    </article>
-
-                    <article class="request-card">
-                        <div class="flex mb-3 items-center gap-3">
-                            <div class="w-10 h-10 rounded-full overflow-hidden">
-                                <img src="/images/profile-4.jpg" class="object-cover w-full h-full" alt="" />
-                            </div>
-                            <div>
-                                <p class="text-sm font-Poppins-SemiBold">Elena Rashidi</p>
-                                <p class="text-xs text-gray-500">6 Mutual friends</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <button class="accept-button max-w-max">Accept</button>
-                            <button class="decline-button max-w-max">Decline</button>
-                        </div>
-                    </article>
-
-                    <article class="request-card">
-                        <div class="flex mb-3 items-center gap-3">
-                            <div class="w-10 h-10 rounded-full overflow-hidden">
-                                <img src="/images/profile-14.jpg" class="object-cover w-full h-full" alt="" />
-                            </div>
-                            <div>
-                                <p class="text-sm font-Poppins-SemiBold">shabnam.494</p>
-                                <p class="text-xs text-gray-500">14 Mutual friends</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <button class="accept-button max-w-max">Accept</button>
-                            <button class="decline-button max-w-max">Decline</button>
-                        </div>
-                    </article>
+                    <% if (!user.private) { %>
+                        <strong>
+                            <h3>Your page is public</h3>
+                        </strong>
+                        <% } else { %>
+                            <% if (requests.length < 1) { %>
+                                <strong>
+                                    <h3>You do not have any requests</h3>
+                                </strong>
+                                <% } else { %>
+                                    <% requests.forEach(request=> { %>
+                                        <article class="request-card">
+                                            <div class="flex mb-3 items-center gap-3">
+                                                <div class="w-10 h-10 rounded-full overflow-hidden">
+                                                    <% if (request.sender.profilePicture) { %>
+                                                        <img src="<%= request.profilePicture %>"
+                                                            class="object-cover w-full h-full" alt="" />
+                                                        <% } else { %>
+                                                            <img src="/images/profiles/default-user.png"
+                                                                class="object-cover w-full h-full" alt="" />
+                                                            <% } %>
+                                                </div>
+                                                <div>
+                                                    <p class="text-sm font-Poppins-SemiBold">
+                                                        <%= request.sender.username %>
+                                                    </p>
+                                                    <p class="text-xs text-gray-500">2 Mutual friends</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center gap-3">
+                                                <form action="/request/accept" method="post">
+                                                    <input type="hidden" name="pageID"
+                                                        value="<%= request.sender._id %>">
+                                                    <button class="accept-button max-w-max">Accept</button>
+                                                </form>
+                                                <form action="/request/reject" method="post">
+                                                    <input type="hidden" name="pageID"
+                                                        value="<%= request.sender._id %>">
+                                                    <button class="decline-button max-w-max">Decline</button>
+                                                </form>
+                                            </div>
+                                        </article>
+                                        <% }) %>
+                                            <% } %>
+                                                <% } %>
                 </section>
             </section>
         </aside>
@@ -889,7 +879,7 @@
 
     <!-- Application  Footer -->
     <footer id="footer" class="flex-center py-2 shadow">
-        <p>Developed with 💖 in <a href="https://sabzlearn.ir">sabzlearn</a></p>
+        <p>Developed with 💖 by AmirRt</p>
     </footer>
 
     <script type="module" src="/js/index.js"></script>
@@ -908,6 +898,74 @@
                 bottuns: "Hurrao((>ω< ))o"
             })
         }
+
+        const followersSpan = document.querySelector(".followers");
+        const followingsSpan = document.querySelector(".followings");
+        const profileMoreBtns = document.querySelectorAll(".profile-more-button");
+        const commentsOverlay = document.querySelector('.modal-screen')
+
+        followersSpan.addEventListener("click", () => {
+            const followersModal = document.querySelector(
+                ".followers-modal-screen"
+            );
+            const followerModalCloseBtn = document.querySelector(
+                ".followers-close-button"
+            );
+
+            followersModal.classList.add("visible");
+
+            followerModalCloseBtn.addEventListener("click", () => {
+                followersModal.classList.remove("visible");
+            });
+        });
+
+        followingsSpan.addEventListener("click", () => {
+            const followingsModal = document.querySelector(
+                ".followings-modal-screen"
+            );
+            const followingsModalCloseBtn = document.querySelector(
+                ".followings-close-button"
+            );
+
+            followingsModal.classList.add("visible");
+
+            followingsModalCloseBtn.addEventListener("click", () => {
+                followingsModal.classList.remove("visible");
+            });
+        });
+
+        profileMoreBtns.forEach((btn) => {
+            btn.addEventListener("click", (event) => {
+                const removePostBtn = event.target.parentElement.parentElement.querySelector(".dropdown");
+
+                removePostBtn.classList.toggle("visible");
+            });
+        });
+
+
+        function commentIconClickHandler(postID) {
+            const modal = document.querySelector('#comments-modal')
+            const commentForm = document.querySelector('#comment-form')
+            const commentFormInputs = commentForm.querySelectorAll('input')
+
+            modal.classList.add('visible')
+
+            commentFormInputs.forEach(input => input.remove())
+
+            commentForm.insertAdjacentHTML('afterbegin',
+                `
+            <input type="hidden" name="postID" value=${postID} />
+          `
+            )
+        };
+
+        window.addEventListener('keyup', event => {
+            if (event.keyCode === 27) {
+                let commentsModal = document.querySelector('#comments-modal')
+                commentsModal.classList.remove('visible')
+            }
+        }) 
+    </script>
     </script>
 </body>
 

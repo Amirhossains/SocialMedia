@@ -20,7 +20,7 @@ const schema = new mongoose.Schema({
 
 schema.statics.createToken = async (user) => {
 
-    const expireInDays = +process.env.REFRESH_TOKEN_EXPIRATION
+    const expireInDays = 20
     const refreshToken = uuidv4()
     const refreshTokenDocument = new model({
         user: user._id,

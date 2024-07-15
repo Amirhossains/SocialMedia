@@ -1,9 +1,8 @@
 const hasAccessToPage = require('./../../utils/hasAccessToPage')
 const followModel = require('./../../models/follows')
 const userModel = require('./../../models/User')
-const postModel = require('./../../models/post')
-const likeModel = require('./../../models/likes')
-const saveModel = require('./../../models/save')
+const requestModel = require('./../../models/request')
+const getPosts = require('./../../utils/getPosts')
 
 module.exports.userPage = async (req, res, next) => {
 
@@ -19,11 +18,14 @@ module.exports.userPage = async (req, res, next) => {
             following: req.params.profileID
         }).lean()
 
-        const page = await userModel.findById(req.params.profileID,
-            'fullname username biography isVerified profilePicture').lean()
+        const request = await requestModel.findOne({
+            sender: req.user._id,
+            reciever: req.params.profileID
+        })
 
+        const page = await userModel.findById(req.params.profileID,
+            'fullname username private biography isVerified profilePicture').lean()
         if (!hasAccess) {
-            req.flash('error', "You do not have access to this page!")
             return res.status(200).render('pages/profile', {
                 followed: Boolean(isFollowed),
                 pageID: req.params.profileID,
@@ -32,7 +34,8 @@ module.exports.userPage = async (req, res, next) => {
                 page,
                 hasAccess,
                 posts: [],
-                isOwn
+                isOwn,
+                request
             })
         }
 
@@ -48,34 +51,7 @@ module.exports.userPage = async (req, res, next) => {
         ).lean()
         followings = followings.map((item) => item.following)
 
-        const posts = await postModel.find({ user: req.params.profileID }).sort({
-            _id: -1
-        }).populate(
-            'user',
-            'fullname username profilePicture'
-        ).lean()
-
-        const likedPostsByUser = await likeModel.find({ user: req.user._id }).lean()
-        const savedPostsByUser = await saveModel.find({ user: req.user._id }).lean()
-        let postsWithLikesAndSaves = [...posts]
-
-        posts.forEach(post => {
-            if (likedPostsByUser.length > 0) {
-                likedPostsByUser.forEach(likedPost => {
-                    if (likedPost.post.toString() === post._id.toString()) {
-                        post['liked'] = true
-                    }
-                })
-            }
-            if (savedPostsByUser.length > 0) {
-                savedPostsByUser.forEach(savedPost => {
-                    if (savedPost.post.toString() === post._id.toString()) {
-                        post['saved'] = true
-                    }
-                })
-            }
-        })
-
+        const posts = await getPosts.userPage(req.user._id, req.params.profileID)
         return res.status(200).render('pages/profile', {
             followed: Boolean(isFollowed),
             pageID: req.params.profileID,
@@ -83,8 +59,9 @@ module.exports.userPage = async (req, res, next) => {
             followings,
             page,
             hasAccess,
-            posts: postsWithLikesAndSaves,
-            isOwn
+            posts,
+            isOwn,
+            request
         })
     } catch (err) {
         next(err)
@@ -116,6 +93,10 @@ module.exports.unfollow = async (req, res, next) => {
             return res.status(404).redirect(`/pages/${profileID}`)
         }
 
+        await requestModel.findOneAndDelete({
+            sender: user._id,
+            reciever: profileID
+        }).lean()
         req.flash('success', "You unfollowed successfully :))")
         return res.status(200).redirect(`/pages/${profileID}`)
     } catch (err) {
@@ -137,6 +118,11 @@ module.exports.follow = async (req, res, next) => {
         if (profileID === user._id.toString()) {
             req.flash('error', "You can not follow yourself !!")
             return res.status(400).redirect(`/pages/${profileID}`)
+        }
+
+        if (page.private === true) {
+            req.flash('error', "You must send request to follow !!")
+            return res.status(403).redirect('back')
         }
 
         const isFollowed = await followModel.findOne({

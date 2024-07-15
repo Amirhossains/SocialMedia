@@ -37,26 +37,24 @@ module.exports.register = async (req, res, next) => {
             // return errorResponse(res, 409, "Email or username already exists!")
         }
 
+        if (req.body.isPublic) {
+            req.body.isPrivate = false
+        } else {
+            req.body.isPrivate = true
+        }
         const isFirstUser = (await userModel.countDocuments()) === 0
         let user = new userModel({
             username,
             email,
             fullname,
             password,
+            private: req.body.isPrivate,
             role: isFirstUser ? 'ADMIN' : 'USER'
         })
         user = await user.save()
 
-        const accessToken = jwt.sign({ userID: user._id }, process.env.JWT_SECRET_KEY, {
-            expiresIn: '10day'
-        })
-        const refreshToken = await refreshTokenModel.createToken(user)
-
-        res.cookie('access-token', accessToken, { maxAge: 900_000, httpOnly: true })
-        res.cookie('refresh-token', refreshToken, { maxAge: 900_000, httpOnly: true })
-
         req.flash('success', "You signed in successfully :))")
-        return res.status(201).redirect('/auth/register')
+        return res.status(201).redirect('/auth/login')
 
         // return successResponse(res, 201, {
         //     message: "User created successfully :))",
@@ -99,7 +97,7 @@ module.exports.login = async (req, res, next) => {
             return res.status(400).redirect('/auth/login')
         }
 
-        const accessToken = jwt.sign({ userID: user._id }, process.env.JWT_SECRET_KEY, {
+        const accessToken = jwt.sign({ userID: user._id }, 'de25df8c62ve2cveuif2fe2', {
             expiresIn: '5s',
         })
         const refreshToken = await refreshTokenModel.createToken(user)
@@ -114,6 +112,20 @@ module.exports.login = async (req, res, next) => {
         })
 
         req.flash('success', "You loged in sucessfully :))")
+        return res.status(200).redirect('/')
+    } catch (err) {
+        next(err)
+    }
+}
+
+module.exports.logout = async (req, res, next) => {
+
+    try {
+        const refreshToken = req.cookies['refresh-token']
+        await refreshTokenModel.findOneAndDelete({ token: refreshToken })
+        res.clearCookie('refresh-token')
+        res.clearCookie('access-token')
+        req.flash('success', "You loged out successfully :))")
         return res.status(200).redirect('/auth/login')
     } catch (err) {
         next(err)
@@ -145,7 +157,7 @@ module.exports.refreshToken = async (req, res, next) => {
             return res.status(404).redirect('/auth/login')
         }
 
-        const accessToken = jwt.sign({ userID: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: '5s' })
+        const accessToken = jwt.sign({ userID: user._id }, 'de25df8c62ve2cveuif2fe2', { expiresIn: '5s' })
 
         const newRefreshToken = await refreshTokenModel.createToken(user)
 
@@ -158,7 +170,13 @@ module.exports.refreshToken = async (req, res, next) => {
             httpOnly: true
         })
 
-        console.log(req.params)
+        if (req.params.path === 'n') {
+            return res.status(200).redirect('/')
+        }
+
+        if (req.params.path2 === undefined) {
+            return res.status(200).redirect(`/${req.params.path}`)
+        }
         return res.status(200).redirect(`/${req.params.path}/${req.params.path2}`)
         //* Success Message
     } catch (err) {
@@ -212,7 +230,7 @@ module.exports.forgetPassword = async (req, res, next) => {
             subject: 'reset password for social media',
             html: `<h2>Hi ${user.fullname}</h2>
 This link is for reseting password of your social media account 
-<a href=http://localhost:${process.env.PORT}/auth/reset-password/${resetToken}>resetPassword link</a>
+<a href=https://amir-social-media.ir/auth/reset-password/${resetToken}>resetPassword link</a>
 `
         }
         transporter.sendMail(mailOptions)
@@ -242,7 +260,6 @@ module.exports.resetPassword = async (req, res, next) => {
             token,
             tokenExpiretion: { $gt: Date.now() }
         })
-        console.log(resetPassword)
         if (!resetPassword) {
             req.flash('error', "Token is not valid!")
             return res.status(400).redirect('back')

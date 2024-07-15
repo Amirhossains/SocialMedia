@@ -5,6 +5,10 @@ const router = express.Router()
 
 router
     .route('/')
-    .get(isAuth, controller.homePage)
+    .get(isAuth.get, controller.homePage)
+
+router
+    .route('/search')
+    .post(isAuth.post, controller.homeSearch)
 
 module.exports = router

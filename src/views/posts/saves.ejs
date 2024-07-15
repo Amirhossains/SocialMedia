@@ -14,17 +14,22 @@
     <header>
         <nav class="w-full flex-between py-5 container">
             <div>
-                <a href="/index.html" class="logo text-xl"> nokoSocial </a>
+                <a href="/" class="logo text-xl"> nokoSocial </a>
             </div>
-            <div class="relative search-box rounded-xl flex items-center">
-                <span class="absolute search-icon top-2-5 left-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-4 h-4">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                    </svg>
-                </span>
-                <input placeholder="Search in Neko Social .." type="text" class="bg-transparent px-8 w-full h-full" />
+            <form action="/search" method="post">
+                <div class="relative search-box rounded-xl flex items-center">
+                    <span class="absolute search-icon top-2-5 left-3">
+                        <button type="submit">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-4 h-4">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                            </svg>
+                        </button>
+                    </span>
+                    <input placeholder="Search in Neko Social .." type="text" class="bg-transparent px-8 w-full h-full"
+                        name="word" />
+            </form>
             </div>
             <div class="flex gap-6 items-center">
                 <a class="create-button bg-indigo-600" href="/posts">
@@ -52,7 +57,8 @@
                     <% if (user.profilePicture) { %>
                         <img src="<%= user.profilePicture%>" class="w-12 h-12 rounded-full" alt="Peyman Ahmadi" />
                         <% } else { %>
-                            <img src="/images/profile-8.jpg" class="w-12 h-12 rounded-full" alt="Peyman Ahmadi" />
+                            <img src="/images/profiles/default-user.png" class="w-12 h-12 rounded-full"
+                                alt="Peyman Ahmadi" />
                             <% } %>
                 </div>
                 <div>
@@ -181,7 +187,7 @@
                     <article class="feed-card shadow">
                         <!-- Feed header -->
                         <header>
-                            <a href="/src/Pages/Profiles/Hosna/index.html" class="flex items-center gap-3">
+                            <a href="/pages/<%= item.post.user._id %>" class="flex items-center gap-3">
                                 <div>
                                     <% if (item.post.user.profilePicture) { %>
                                         <img src="<%= item.post.user.profilePicture %>" alt="Profile card"
@@ -290,36 +296,99 @@
 
                             <!-- Likes count -->
                             <div class="mt-1 flex items-center relative">
-                                <div class="liked-by-wrapper relative block">
-                                    <span>
-                                        <img src="/images/profile-5.jpg" class="likedBy" alt="" />
-                                    </span>
-                                    <span>
-                                        <img src="/images/profile-6.jpg" class="likedBy left-3 z-10" alt="" />
-                                    </span>
-                                    <span> </span>
-                                    <img src="/images/profile-7.jpg" class="likedBy left-6 z-20" alt="" />
-                                </div>
+                                <% if (item.friendsLikes) { %>
+                                    <% if (item.friendsLikes.length> 0) { %>
+                                        <div class="liked-by-wrapper relative block">
+                                            <span>
+                                                <% if (item.friendsLikes[0].profilePicture) { %>
+                                                    <img src="<%= item.friendsLikes[0].profilePicture %>"
+                                                        class="likedBy left-6 z-20" alt="" />
+                                                    <% } else { %>
+                                                        <img src="/images/profiles/default-user.png"
+                                                            class="likedBy  left-6 z-20" alt="" />
+                                                        <% } %>
+                                            </span>
+                                            <% if (item.friendsLikes[1]) {%>
+                                                <span>
+                                                    <% if (item.friendsLikes[1].profilePicture) { %>
+                                                        <img src="<%= item.friendsLikes[1].profilePicture %>"
+                                                            class="likedBy left-3 z-10" alt="" />
+                                                        <% } else { %>
+                                                            <img src="/images/profiles/default-user.png"
+                                                                class="likedBy left-3 z-10" alt="" />
+                                                            <% } %>
+                                                </span>
+                                                <% if (item.friendsLikes[2]) { %>
+                                                    <span>
+                                                        <% if (item.friendsLikes[2].profilePicture) { %>
+                                                            <img src="<%= item.friendsLikes[2].profilePicture %>"
+                                                                class="likedBy" alt="" />
+                                                            <% } else { %>
+                                                                <img src="/images/profiles/default-user.png"
+                                                                    class="likedBy" alt="" />
+                                                                <% } %>
+                                                    </span>
+                                                    <% } %>
+                                                        <% } %>
+                                        </div>
 
-                                <div class="text-sm">
-                                    <span> Liked by </span>
-                                    <span>
-                                        <strong> rad_front </strong>
-                                    </span>
-                                    <span> and </span>
-                                    <span>
-                                        <strong> 2,923 others </strong>
-                                    </span>
-                                </div>
+                                        <div class="text-sm">
+                                            <span> Liked by </span>
+                                            <span>
+                                                <strong>
+                                                    <%= item.friendsLikes[0].username %>
+                                                </strong>
+                                            </span>
+                                            <span> and </span>
+                                            <span>
+                                                <strong>
+                                                    <%= item.allLikes - 1 %> others
+                                                </strong>
+                                            </span>
+                                        </div>
+                                        <% } else { %>
+                                            <div class="text-sm">
+                                                <span> Likes </span>
+                                                <span>
+                                                    <% if (item.hasLike) { %>
+                                                        <strong>
+                                                            <%= item.allLikes%> with you
+                                                        </strong>
+                                                        <% } else { %>
+                                                            <strong>
+                                                                <%= item.allLikes %>
+                                                            </strong>
+                                                            <% } %>
+                                                </span>
+                                            </div>
+                                            <% } %>
+                                                <% } else { %>
+                                                    <div class="text-sm">
+                                                        <span> Likes </span>
+                                                        <span>
+                                                            <% if (item.hasLike) { %>
+                                                                <strong>
+                                                                    <%= item.allLikes%> with you
+                                                                </strong>
+                                                                <% } else { %>
+                                                                    <strong>
+                                                                        <%= item.allLikes %>
+                                                                    </strong>
+                                                                    <% } %>
+                                                        </span>
+                                                    </div>
+                                                    <% } %>
                             </div>
 
                             <!-- User Infos (name, description) -->
                             <div class="mt-1 text-sm gap-1">
                                 <span>
-                                    <strong> Lena Mc'Queen </strong>
+                                    <strong>
+                                        <%= item.post.user.username %>
+                                    </strong>
                                 </span>
                                 <p class="text-gray-700">
-                                    Lorem ipsum dolor sit amet consectetur.
+                                    <%= item.post.description %>
                                 </p>
                             </div>
 
