@@ -18,7 +18,7 @@ with deploy mode`)
 //* DataBase connection 
 async function connectToDataBase() {
     try {
-        await mongoose.connect('mongodb://root:mDG9vgJ3E6I7TXXTOUaNUVfW@hotaka.liara.cloud:31770/social-media-db?authSource=admin', {
+        await mongoose.connect('mongodb://localhost:27017/SocialMedia', {
             authSource: 'admin'
         })
         console.log(`MongoDB Connected To ${mongoose.connection.host}`)
